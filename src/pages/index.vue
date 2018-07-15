@@ -65,9 +65,22 @@ export default {
       ]
     }
   },
+  created () {
+    this.getData()
+  },
   methods: {
-    onSubmit () {
+    async onSubmit () {
       console.log('submit!')
+      try {
+        const res = await request({
+          url: '/api/addresses',
+          method: 'post',
+          data: this.formInline
+        })
+        this.jsonData = res.data.data.results
+      } catch (error) {
+        console.log(error)
+      }
     },
     async getData () {
       try {
