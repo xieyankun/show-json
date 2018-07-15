@@ -4,13 +4,13 @@
       <h1>{{ msg }}</h1>
       <el-form :inline="true" :model="formInline" class="demo-form-inline">
         <el-form-item>
-          <el-select v-model="formInline.region" placeholder="筛选条件">
+          <el-select v-model="formInline.tag" placeholder="筛选条件">
             <el-option label="区域一" value="shanghai"></el-option>
             <el-option label="区域二" value="beijing"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item style="width: 50%">
-          <el-input style="width:100%" v-model="formInline.user" placeholder="搜索条件"></el-input>
+          <el-input style="width:100%" v-model="formInline.key" placeholder="搜索条件"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -31,13 +31,13 @@
           @click="handleClick">
         </vue-json-pretty>
       </div>
-      
     </div>
   </div>
 </template>
 
 <script>
 import VueJsonPretty from 'vue-json-pretty'
+import request from '@/service/request.js'
 
 export default {
   components: {
@@ -47,11 +47,11 @@ export default {
     return {
       msg: 'Welcome to use show json parse',
       formInline: {
-        user: '',
-        region: ''
+        tag: '',
+        key: ''
       },
       n: 0,
-      jsonData:[
+      jsonData: [
         {
           id: 1,
           key: 'value',
@@ -66,13 +66,25 @@ export default {
     }
   },
   methods: {
-    onSubmit() {
-      console.log('submit!');
+    onSubmit () {
+      console.log('submit!')
     },
-    handleClick() {
+    async getData () {
+      try {
+        const res = await request({
+          url: '/api/addresses',
+          method: 'post',
+          data: this.formInline
+        })
+        this.jsonData = res.data.data.results
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    handleClick () {
       console.log('handleClick')
     },
-    showContent(item, index) {
+    showContent (item, index) {
       this.n = index
     }
   }
